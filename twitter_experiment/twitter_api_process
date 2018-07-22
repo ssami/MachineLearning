@@ -1,0 +1,5 @@
+https://api.twitter.com/1.1/statuses/lookup.json?id=492641572459409408 
+1. base64 encode consumer secret and consumer key 
+2. make: enc(consumerkey):enc(consumersecrey)
+3. base64 encode the string from 2) 
+
