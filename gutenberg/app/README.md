@@ -11,6 +11,7 @@ Components:
 ## Get all available models 
 
 *GET /model* 
+
 Response: 
   - 200 with list of all available models, their F1 scores, and which is currently live (that is, being hosted in the machine)
   - 500 if something really goes wrong
@@ -18,6 +19,7 @@ Response:
 ## Upload a model 
 
 *POST /model*
+
 Accept: .bin files only
 Response: 
   - 201 if model is correctly uploaded; "Location" header contains the modelId it was created with
@@ -28,6 +30,7 @@ Takes a .bin file produced by the FastText training framework and stores it in l
 ## Make a model live
 
 *PUT /model/{modelId}?live=true*
+
 Response:  
   - 204 if the model was successful made "live"
   - 404 if the model id was not found
@@ -35,6 +38,7 @@ Response:
 ## Make a prediction
 
 *POST /prediction*
+
 Request body: 
 ```
 {
@@ -42,10 +46,12 @@ Request body:
 }
 ```
 Accept: JSON input format with text
+
 Response: 
   - 200 for a successful prediction
   - 400 if input format is incorrect
   - 500 if something went wrong (server error)
+
 Response body: 
 ```
 {
@@ -61,6 +67,7 @@ This prediction is made with whichever model is currently live.
 ## Give feedback for a prediction 
 
 *POST /model/*
+
 Request body: 
 ```
 {

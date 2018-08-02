@@ -1,27 +1,21 @@
-import os
+from flask import Flask, request, jsonify
+from .db import *
 
-from flask import Flask
+app = Flask(__name__)
+conn = db.get_db()
+# db.init_app(app)
+#TODO: fix app init
+#  turned this off because "in do_teardown_appcontext
+#  TypeError: close_db() takes 0 positional arguments but 1 was given""
 
 
-def create_app(test_config=None):
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY="dev",
-        DATABASE=os.path.join(app.instance_path, 'gut_redis')
-    )
-    if test_config is None:
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        app.config.from_mapping(test_config)
+@app.route("/")
+def main():
+    return "Hello, world!"
 
-    # make sure the instance path is present
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
 
-    @app.route("/")
-    def main():
-        return "Hello, world!"
-
-    return app
+@app.route("/model", methods=("POST", "GET"))
+def model():
+    if request.method == "GET":
+        model_list = [x.decode('utf-8') for x in conn.smembers('models')]
+        return jsonify(model_list)
