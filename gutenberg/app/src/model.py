@@ -1,5 +1,5 @@
 import time
-from .generator import ModelHashGenerator
+from src.generator import ModelHashGenerator
 
 
 class ModelInfo():
