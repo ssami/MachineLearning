@@ -7,6 +7,10 @@ Components:
   + A local Flask service with well-defined backend to upload models, perform predictions, give human feedback and training
   + A front end for the Flask service
 
+Currently in development: 
++ Redis to store the model info 
++ Minio in Dockerized form with simple temporary store in /data to hold model binary files
++ Local Flask service with simple model info upload and info get
 
 ## Get all available models 
 
