@@ -5,10 +5,11 @@ from src import constants
 from src.model import ModelInfo
 from src.exceptions import InvalidDataError
 from src.utils import allowed_files
+
 import os
 
 app = Flask(__name__, instance_relative_config=True)
-conn = get_db()
+conn = get_db('src.db.RedisDB')
 # db.init_app(app)
 #TODO: fix app init
 #  turned this off because "in do_teardown_appcontext
@@ -23,15 +24,15 @@ def main():
 @app.route("/model", methods=["POST", "GET"])
 def model():
     if request.method == "GET":
-        model_list = [x.decode('utf-8') for x in conn.smembers(constants.MODEL_KEYSPACE)]
+        model_list = [x.decode('utf-8') for x in conn.find(constants.MODEL_KEYSPACE)]
         return jsonify(model_list), 200
     else:
         if request.is_json:
             data = request.get_json()
-            model_info = ModelInfo(data['description'], data['metrics'])
+            model_info = ModelInfo(data['description'], data['metrics'], None)
             try:
-                conn.sadd(constants.MODEL_KEYSPACE, model_info.hash)
-                conn.hmset(model_info.hash, model_info.items())
+                conn.store(constants.MODEL_KEYSPACE, model_info.hash)
+                conn.store(model_info.hash, model_info.items)
             except Exception as e:
                 return jsonify(str(e)), 500
             return jsonify("Success"), 201
