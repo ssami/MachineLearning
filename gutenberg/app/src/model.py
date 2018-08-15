@@ -11,11 +11,6 @@ class ModelInfo():
         self.metrics = metrics
         self.location = location
 
+    @property
     def items(self):
-        return {
-            'hash': self.hash,
-            'timestamp': self.timestamp,
-            'description': self.description,
-            'metrics': self.metrics,
-            'location': self.location
-        }
+        return self.__dict__
