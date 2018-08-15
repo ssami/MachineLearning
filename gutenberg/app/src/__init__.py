@@ -9,7 +9,7 @@ from src.utils import allowed_files
 import os
 
 app = Flask(__name__, instance_relative_config=True)
-conn = get_db('src.db.RedisDB')
+conn = get_db('RedisDB')
 # db.init_app(app)
 #TODO: fix app init
 #  turned this off because "in do_teardown_appcontext
@@ -73,4 +73,5 @@ if __name__ == "__main__":
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
     app.run(debug=1)
