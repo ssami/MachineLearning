@@ -20,6 +20,15 @@ Response:
   - 200 with list of all available models, their F1 scores, and which is currently live (that is, being hosted in the machine)
   - 500 if something really goes wrong
 
+## Get all information on a specific model
+
+*GET /model/{modelId} 
+
+Response: 
+  - 200 with all information about this model
+  - 500 if something really goes wrong
+
+
 ## Upload a model 
 
 *POST /model*
