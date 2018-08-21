@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import redis
 from src.exceptions import InvalidType
 from flask import g
+import src.constants
 
 
 class Database(ABC):
@@ -28,32 +29,41 @@ class Database(ABC):
     def find(self, key):
         pass
 
+    @abstractmethod
+    def findall(self, key):
+        pass
+
 
 class RedisDB(Database):
 
     def __create__(self):
-        return redis.Redis(
+        return redis.StrictRedis(
             host=self.host,
             port=self.port,
-            password=self.password
+            password=self.password,
+            charset='utf-8',
+            decode_responses=True
         )
 
     def store(self, key, info):
         """
-        Clearly these are not the only two
-        available params. The remainder are
-        left as an exercise for the reader.
+        For some reason I decided to treat
+        Redis like a document store.
+        This will split the key into a set
+        and connect the key with its
+        'document', the info
         :param key:
         :param info:
         :return:
         """
-        if type(info) == dict:
-            self.db.hmset(key, info)
-        else:
-            self.db.sadd(key, info)
+        self.db.sadd(src.constants.MODEL_KEYSPACE, key)
+        self.db.hmset(key, info)
+
+    def findall(self, key):
+        return self.db.smembers(key)
 
     def find(self, key):
-        return self.db.smembers(key)
+        return self.db.hgetall(key)
 
 
 def get_db(db_class, host='localhost', port='6379', user=None, password=None):
