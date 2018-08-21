@@ -16,7 +16,7 @@ class HashGenerator(ABC):
 class ModelHashGenerator(HashGenerator):
 
     def generate(self):
-        return int(time.time())
+        return str(int(time.time()))
 
     def generate_with_input(self, input):
         raise NotImplementedError("ModelHashGenerator does not "
