@@ -44,7 +44,6 @@ def all_models():
 @app.route("/model/<modelId>")
 def model(modelId):
     info_dict = conn.find(modelId)
-    met = json.loads(info_dict['metrics'])
     return jsonify(info_dict)
 
 
