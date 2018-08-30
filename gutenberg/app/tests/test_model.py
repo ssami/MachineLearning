@@ -18,10 +18,10 @@ def test_model_info_basic():
     Tests that default inputs will result in successful model object
     """
     model = ModelInfo('test description', {'f1': 0.9},
-                      BaseLocation('protoc://something'))
+                      BaseLocation('protoc://something:8080/thingy'))
     assert 'test description' in model.items['description']
     assert model.items['metrics']['f1'] == 0.9
-    assert model.items['location'].get_host() == 'something'
+    assert model.items['location'].get_host() == 'something:8080'
     assert model.items['hash'] is not None
 
 

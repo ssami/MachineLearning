@@ -1,6 +1,11 @@
 import time
 from src.generator import ModelHashGenerator
 from src.exceptions import InvalidDataError
+from abc import ABC, abstractmethod
+import fastText
+
+from src.exceptions import InvalidType
+from src.model_loader import BaseModelLoader
 
 
 class ModelInfo():
@@ -25,3 +30,56 @@ class ModelInfo():
     @property
     def items(self):
         return self.__dict__
+
+    @property
+    def live(self):
+        return self.live
+
+    @live.setter
+    def live(self, is_live):
+        self.live = is_live
+
+
+class BaseModel(ABC):
+
+    def __init__(self, loader):
+        self.model_loader = loader
+        self.model = None
+
+    @abstractmethod
+    def load(self):
+        self.model = self.model_loader.read()
+
+    @abstractmethod
+    def unload(self):
+        self.model_loader.unread()
+        self.model = None   # unset model
+
+    @abstractmethod
+    def predict(self, data):
+        pass
+
+
+class FastTextModel(BaseModel):
+
+    def load(self):
+        self.model = fastText.load_model(
+            self.model_loader.read())
+
+    def predict(self, data):
+        return self.model.predict(data)
+
+    def unload(self):
+        self.model = None
+
+
+def get_model(model_type, location, loader):
+    for clz in BaseModel.__subclasses__():
+        if clz.__name__ == model_type:
+            for klz in BaseModelLoader.__subclasses__():
+                if klz.__name__ == loader:
+                    ldr = klz(location)
+                    return clz(ldr)
+            raise InvalidType('{0} is not a valid loader type'.format(loader))
+
+    raise InvalidType('{0} is not a valid model type'.format(model_type))

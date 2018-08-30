@@ -33,7 +33,7 @@ class MinioLocation(BaseLocation):
     def __qualify_full_location(self):
         if self.parsed:
             self.path = self.parsed.path
-            self.bucket = os.path.dirname(self.parsed.path)[1:-1]
+            self.bucket = os.path.dirname(os.path.dirname('/models/gutenberg_test/'))[1:]
             self.object_name = os.path.basename(self.parsed.path)
 
     def get_bucket(self):

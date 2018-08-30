@@ -40,12 +40,12 @@ Response:
 
 Takes a .bin file produced by the FastText training framework and stores it in local memory. 
 
-## Make a model live
+## Make a model live or make it un-live
 
 *PUT /model/{modelId}?live=true*
 
 Response:  
-  - 204 if the model was successful made "live"
+  - 204 if the model status was successfully changed
   - 404 if the model id was not found
 
 ## Make a prediction
