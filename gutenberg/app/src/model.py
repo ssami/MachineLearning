@@ -2,6 +2,7 @@ import time
 from src.generator import ModelHashGenerator
 from src.exceptions import InvalidDataError
 from abc import ABC, abstractmethod
+from src.exceptions import ModelException, LoaderException
 import fastText
 
 from src.exceptions import InvalidType
@@ -62,9 +63,16 @@ class BaseModel(ABC):
 
 class FastTextModel(BaseModel):
 
-    def load(self):
-        self.model = fastText.load_model(
-            self.model_loader.read())
+    def load(self, local_path=None):
+        try:
+            self.model = fastText.load_model(
+                self.model_loader.read(local_path))
+        except LoaderException:
+            raise
+        except Exception as e:
+            raise ModelException(str(e))
+
+        return self.model
 
     def predict(self, data):
         return self.model.predict(data)
@@ -83,3 +91,4 @@ def get_model(model_type, location, loader):
             raise InvalidType('{0} is not a valid loader type'.format(loader))
 
     raise InvalidType('{0} is not a valid model type'.format(model_type))
+

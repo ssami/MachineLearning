@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from minio import Minio
 from src.location import MinioLocation
+from src.exceptions import LoaderException
 
 import os
 
@@ -25,21 +26,23 @@ class MinioLoader(BaseModelLoader):
         BaseModelLoader.__init__(self, location)
         self.location = MinioLocation(location)
 
-    def read(self):
+    def read(self, local_path=None):
         """
-        :param location:
-        :param local: Where to save the remote model locally?
         :return:
         """
-        # todo: put this inside model config
-        client = Minio(self.location.get_host(), access_key='admin',
-                       secret_key='password', secure=False)
-        client.fget_object(bucket_name=self.location.get_bucket(),
-                           object_name=self.location.get_object_name(),
-                           file_path=os.path.dirname(
-                               os.path.realpath(__file__))
-                                     + os.path.sep + self.location.get_object_name())
+        # todo: put access/key, local path pref, inside model config
 
+        local_path = os.path.join(local_path, self.location.get_object_name())
+        try:
+            client = Minio(self.location.get_host(), access_key='admin',
+                           secret_key='password', secure=False)
+            client.fget_object(bucket_name=self.location.get_bucket(),
+                               object_name=self.location.get_object_name(),
+                               file_path=local_path)
+        except Exception as e:
+            raise LoaderException(str(e))
+
+        return local_path
 
     def unread(self):
         pass

@@ -63,6 +63,7 @@ Accept: JSON input format with text
 Response: 
   - 200 for a successful prediction
   - 400 if input format is incorrect
+  - 404 if model does not exist
   - 500 if something went wrong (server error)
 
 Response body: 
