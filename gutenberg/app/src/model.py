@@ -41,6 +41,14 @@ class ModelInfo():
         self.live = is_live
 
 
+class FeedbackInfo():
+
+    def __init__(self, model_id, label_actual, label_expected):
+        self.model_id = model_id
+        self.label_actual = label_actual
+        self.label_expected = label_expected
+
+
 class BaseModel(ABC):
 
     def __init__(self, loader):
